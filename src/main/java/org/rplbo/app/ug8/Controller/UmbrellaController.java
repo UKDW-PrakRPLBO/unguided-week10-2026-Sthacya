@@ -14,11 +14,10 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class UmbrellaController implements Initializable {
-    // Variabel FXML diubah untuk mencerminkan skema Grup B
-    @FXML private TextField txtItem, txtInitial, txtSupply;
+    @FXML private TextField txtItem, txtAcquired, txtUsed;
     @FXML private TableView<InventoryItem> tableInventory;
     @FXML private TableColumn<InventoryItem, String> colName;
-    @FXML private TableColumn<InventoryItem, Integer> colInitial, colSupply, colFinal;
+    @FXML private TableColumn<InventoryItem, Integer> colAcquired, colUsed, colStock;
 
     private UmbrellaDBManager db;
     private ObservableList<InventoryItem> masterData = FXCollections.observableArrayList();
@@ -29,38 +28,32 @@ public class UmbrellaController implements Initializable {
         db = new UmbrellaDBManager();
         System.out.println("LOG: OPERATIVE " + UmbrellaApp.loggedInUser + " ACCESS GRANTED.");
 
+        colName.setCellValueFactory(new PropertyValueFactory<>("itemName"));
+        colAcquired.setCellValueFactory(new PropertyValueFactory<>("acquired"));
+        colUsed.setCellValueFactory(new PropertyValueFactory<>("used"));
+        colStock.setCellValueFactory(new PropertyValueFactory<>("totalStock"));
+
+        db = new UmbrellaDBManager();
+        System.out.println("LOG: OPERATIVE " + UmbrellaApp.loggedInUser + " ACCESS GRANTED.");
+
         // ==============================================================================
         // TODO 1: MENGHUBUNGKAN KOLOM TABEL (TABLE COLUMN MAPPING)
         // ==============================================================================
-        // Hubungkan setiap TableColumn (colName, colInitial, colSupply, colFinal)
-        // dengan nama atribut (property) yang sesuai di dalam class InventoryItem.
-        // Gunakan setCellValueFactory() dan new PropertyValueFactory<>().
-        // ==============================================================================
-
-        // --- TULIS KODE ANDA DI BAWAH INI ---
-
-
-
+        colName.setCellValueFactory(new PropertyValueFactory<>("itemName"));
+        colAcquired.setCellValueFactory(new PropertyValueFactory<>("acquired"));
+        colUsed.setCellValueFactory(new PropertyValueFactory<>("used"));
+        colStock.setCellValueFactory(new PropertyValueFactory<>("totalStock"));
 
         // ==============================================================================
         // TODO 2: LISTENER KLIK BARIS TABEL (SELECTION MODEL)
         // ==============================================================================
-        // Lengkapi logika di dalam listener di bawah ini:
-        // 1. Masukkan objek 'newVal' ke dalam variabel global 'selectedItem'.
-        // 2. Tampilkan nilai itemName dari newVal ke dalam TextField 'txtItem'.
-        // 3. Tampilkan nilai initialStock dari newVal ke dalam TextField 'txtInitial'.
-        // 4. Tampilkan nilai newSupply dari newVal ke dalam TextField 'txtSupply'.
-        //    (Ingat: Ubah tipe data angka menjadi String menggunakan String.valueOf).
-        // 5. Matikan (disable) TextField 'txtItem' agar pengguna tidak bisa mengubah
-        //    nama item (Primary Key) saat sedang mengedit data.
-        // ==============================================================================
-
         tableInventory.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
-                // --- TULIS KODE ANDA DI BAWAH INI ---
-
-
-
+                selectedItem = newVal;
+                txtItem.setText(newVal.getItemName());
+                txtAcquired.setText(String.valueOf(newVal.getAcquired()));
+                txtUsed.setText(String.valueOf(newVal.getUsed()));
+                txtItem.setDisable(true); // Primary key tidak boleh diubah
             }
         });
 
@@ -69,65 +62,85 @@ public class UmbrellaController implements Initializable {
 
     @FXML
     private void handleSave() {
-        // ==============================================================================
-        // TODO 3: LOGIKA PERBARUI/UPDATE DATA
-        // ==============================================================================
-        // 1. Pastikan ada item yang dipilih (cek apakah selectedItem tidak sama dengan null).
-        // 2. Ambil nilai teks terbaru dari txtInitial dan txtSupply, lalu ubah menjadi Integer.
-        // 3. HITUNG FINAL STOCK BARU:
-        //    Rumus GRUP B: final_stock = initial + supply
-        // 4. Buat objek InventoryItem baru menggunakan data yang diperbarui.
-        //    PENTING: Ambil nama item dari selectedItem.getItemName(), jangan dari TextBox!
-        // 5. Panggil db.updateItem(). Jika berhasil (mengembalikan true), panggil:
-        //    - refreshTable()
-        //    - clearFields()
-        // ==============================================================================
+        if (selectedItem != null) {
+            try {
+                int acquired = Integer.parseInt(txtAcquired.getText());
+                int used = Integer.parseInt(txtUsed.getText());
+                int stock = acquired - used;
 
-        // --- TULIS KODE ANDA DI BAWAH INI ---
+                InventoryItem updatedItem = new InventoryItem(
+                        selectedItem.getItemName(),
+                        acquired,
+                        used,
+                        stock
+                );
 
-
+                if (db.updateItem(updatedItem)) {
+                    refreshTable();
+                    clearFields();
+                }
+            } catch (NumberFormatException e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Input Error");
+                alert.setHeaderText(null);
+                alert.setContentText("Acquired dan Used harus berupa angka.");
+                alert.showAndWait();
+            }
+        } else {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning");
+            alert.setHeaderText(null);
+            alert.setContentText("Pilih item yang ingin diupdate terlebih dahulu.");
+            alert.showAndWait();
+        }
     }
 
     @FXML
     private void handleAdd() {
-        // ==============================================================================
-        // TODO 4: LOGIKA TAMBAH DATA
-        // ==============================================================================
-        // 1. Ambil nilai teks dari txtInitial dan txtSupply, lalu ubah menjadi Integer.
-        // 2. HITUNG FINAL STOCK:
-        //    Rumus GRUP B: final_stock = initial + supply
-        // 3. Ambil nilai String dari field txtItem untuk nama item.
-        // 4. Buat objek InventoryItem baru menggunakan data-data di atas.
-        // 5. Panggil metode addItem() dari objek 'db' dan masukkan objek item tersebut.
-        // 6. Panggil metode refreshTable() agar data baru muncul di tabel.
-        // ==============================================================================
+        try {
+            int acquired = Integer.parseInt(txtAcquired.getText());
+            int used = Integer.parseInt(txtUsed.getText());
+            int stock = acquired - used;
+            String itemName = txtItem.getText();
 
-        // --- TULIS KODE ANDA DI BAWAH INI ---
-
-
+            InventoryItem item = new InventoryItem(itemName, acquired, used, stock);
+            db.addItem(item);
+            refreshTable();
+            clearFields();
+        } catch (NumberFormatException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Input Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Acquired dan Used harus berupa angka.");
+            alert.showAndWait();
+        }
     }
 
     @FXML
     private void handleDelete() {
-        // ==============================================================================
-        // TODO 5: LOGIKA HAPUS DATA
-        // ==============================================================================
-        // 1. Ambil item yang sedang dipilih oleh user di tableInventory.
-        // 2. Cek jika item tersebut ada (tidak null):
-        //    a. (Opsional/Nilai Plus) Tampilkan Alert konfirmasi penghapusan.
-        //    b. Panggil db.deleteItem() dengan parameter nama item tersebut.
-        //    c. Jika berhasil terhapus dari database, hapus juga dari 'masterData'.
-        //    d. Panggil clearFields().
-        // 3. Jika null (user belum memilih baris), tampilkan Alert bertipe WARNING
-        //    yang meminta user memilih item terlebih dahulu.
-        // ==============================================================================
+        InventoryItem item = tableInventory.getSelectionModel().getSelectedItem();
 
-        // --- TULIS KODE ANDA DI BAWAH INI ---
+        if (item != null) {
+            Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+            confirm.setTitle("Konfirmasi Hapus");
+            confirm.setHeaderText(null);
+            confirm.setContentText("Yakin ingin menghapus item: " + item.getItemName() + "?");
 
-
+            if (confirm.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+                if (db.deleteItem(item.getItemName())) {
+                    masterData.remove(item);
+                    clearFields();
+                }
+            }
+        } else {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning");
+            alert.setHeaderText(null);
+            alert.setContentText("Pilih item yang ingin dihapus terlebih dahulu.");
+            alert.showAndWait();
+        }
     }
 
-    // Logout
     @FXML
     private void handleLogout() {
         try {
@@ -137,17 +150,16 @@ public class UmbrellaController implements Initializable {
         }
     }
 
-    // Bersihkan Text Fields
     @FXML
     private void clearFields() {
         txtItem.clear();
-        txtInitial.clear();
-        txtSupply.clear();
+        txtAcquired.clear();
+        txtUsed.clear();
         txtItem.setDisable(false);
+        txtUsed.setDisable(false);
         selectedItem = null;
     }
 
-    // Refresh Table
     @FXML
     private void refreshTable() {
         masterData.setAll(db.getAllItems());

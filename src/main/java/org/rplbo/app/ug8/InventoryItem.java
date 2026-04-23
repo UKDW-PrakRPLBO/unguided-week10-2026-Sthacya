@@ -6,53 +6,49 @@ package org.rplbo.app.ug8;
  */
 public class InventoryItem {
     private String itemName;
-    private int initialStock; // Stok Awal
-    private int newSupply;    // Pasokan Baru
-    private int finalStock;   // Stok Akhir (Hasil Penjumlahan)
+    private int acquired;    // jumlah masuk
+    private int used;        // jumlah terpakai
+    private int totalStock;  // stok akhir
 
     /**
      * Constructor untuk inisialisasi objek InventoryItem.
      */
-    public InventoryItem(String itemName, int initialStock, int newSupply, int finalStock) {
+    public InventoryItem(String itemName, int acquired, int used, int totalStock) {
         this.itemName = itemName;
-        this.initialStock = initialStock;
-        this.newSupply = newSupply;
-        this.finalStock = finalStock;
+        this.acquired = acquired;
+        this.used = used;
+        this.totalStock = totalStock;
     }
 
     // Getter dan Setter untuk Item Name
     public String getItemName() {
         return itemName;
     }
-
     public void setItemName(String itemName) {
         this.itemName = itemName;
     }
 
-    // Getter dan Setter untuk Initial Stock
-    public int getInitialStock() {
-        return initialStock;
+    // Getter dan Setter untuk Acquired
+    public int getAcquired() {
+        return acquired;
+    }
+    public void setAcquired(int acquired) {
+        this.acquired = acquired;
     }
 
-    public void setInitialStock(int initialStock) {
-        this.initialStock = initialStock;
+    // Getter dan Setter untuk Used
+    public int getUsed() {
+        return used;
+    }
+    public void setUsed(int used) {
+        this.used = used;
     }
 
-    // Getter dan Setter untuk New Supply
-    public int getNewSupply() {
-        return newSupply;
+    // Getter dan Setter untuk Total Stock
+    public int getTotalStock() {
+        return totalStock;
     }
-
-    public void setNewSupply(int newSupply) {
-        this.newSupply = newSupply;
-    }
-
-    // Getter dan Setter untuk Final Stock
-    public int getFinalStock() {
-        return finalStock;
-    }
-
-    public void setFinalStock(int finalStock) {
-        this.finalStock = finalStock;
+    public void setTotalStock(int totalStock) {
+        this.totalStock = totalStock;
     }
 }

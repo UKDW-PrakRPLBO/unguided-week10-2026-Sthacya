@@ -63,9 +63,9 @@ public class UmbrellaDBManager {
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, item.getItemName());
-            pstmt.setInt(2, item.getInitialStock());
-            pstmt.setInt(3, item.getNewSupply());
-            pstmt.setInt(4, item.getFinalStock());
+            pstmt.setInt(2, item.getAcquired());
+            pstmt.setInt(3, item.getUsed());
+            pstmt.setInt(4, item.getTotalStock());
             pstmt.executeUpdate();
 
         } catch (SQLException e) {
@@ -102,9 +102,9 @@ public class UmbrellaDBManager {
         try (Connection conn = DriverManager.getConnection(URL);
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setInt(1, item.getInitialStock());
-            pstmt.setInt(2, item.getNewSupply());
-            pstmt.setInt(3, item.getFinalStock());
+            pstmt.setInt(1, item.getAcquired());
+            pstmt.setInt(2, item.getUsed());
+            pstmt.setInt(3, item.getTotalStock());
             pstmt.setString(4, item.getItemName());
 
             int rowsAffected = pstmt.executeUpdate();
